@@ -1753,15 +1753,15 @@ function confirmAddFunds() {
   reqs.unshift({ userId: user.id, userName: user.name, amount: amt, time: new Date().toLocaleString(), status: 'Pending' });
   saveFundRequests(reqs);
   
-  const msg = encodeURIComponent(`💰 FUND REQUEST — Global Booster\n\nUser: ${user.name}\nID: ${user.id}\nAmount: ${amt} GHS\nTime: ${new Date().toLocaleString()}\n\nPlease verify Paystack payment and credit account.`);
-  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
-  
   setTimeout(() => {
     window.open(PAYSTACK_URL + '?ref=' + user.id + '&amount=' + amt, '_blank');
   }, 500);
   
   closeModal('addFundsModal');
   toast('Admin notified! Complete payment on Paystack.', 'success');
+
+  const msg = encodeURIComponent(`💰 FUND REQUEST — Global Booster\n\nUser: ${user.name}\nID: ${user.id}\nAmount: ${amt} GHS\nTime: ${new Date().toLocaleString()}\n\nPlease verify Paystack payment and credit account.`);
+  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
 }
 
 // ═══════════════════════════════════ ADMIN ═══════════════════════════════════
