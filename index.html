@@ -1753,14 +1753,13 @@ function confirmAddFunds() {
   reqs.unshift({ userId: user.id, userName: user.name, amount: amt, time: new Date().toLocaleString(), status: 'Pending' });
   saveFundRequests(reqs);
   
+  
   setTimeout(() => {
     window.open(PAYSTACK_URL + '?ref=' + user.id + '&amount=' + amt, '_blank');
   }, 500);
   
   closeModal('addFundsModal');
   toast('Admin notified! Complete payment on Paystack.', 'success');
-
- 
 }
 
 // ═══════════════════════════════════ ADMIN ═══════════════════════════════════
