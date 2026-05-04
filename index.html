@@ -1760,8 +1760,7 @@ function confirmAddFunds() {
   closeModal('addFundsModal');
   toast('Admin notified! Complete payment on Paystack.', 'success');
 
-  const msg = encodeURIComponent(`💰 FUND REQUEST — Global Booster\n\nUser: ${user.name}\nID: ${user.id}\nAmount: ${amt} GHS\nTime: ${new Date().toLocaleString()}\n\nPlease verify Paystack payment and credit account.`);
-  window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
+ 
 }
 
 // ═══════════════════════════════════ ADMIN ═══════════════════════════════════
