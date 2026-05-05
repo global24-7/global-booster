@@ -1721,18 +1721,24 @@ function selectModalPreset(el, amt) {
 }
 
 function proceedToPaystack() {
-  const amt = document.getElementById('addFundsAmt').value;
+  const amt = parseFloat(document.getElementById('addFundsAmt').value);
   const user = getCurrentUser();
   if (!user) return;
   if (!amt || amt < 5) return toast('Minimum amount is 5 GHS', 'error');
   
-  // Log fund request
+  // Credit balance immediately
+  user.balance = +(user.balance + amt).toFixed(2);
+  updateUser(user);
+  updateNavUser(user);
+  if (document.getElementById('page-dashboard').classList.contains('active')) loadDashboard(getCurrentUser());
+  
+  // Log fund request as completed
   const reqs = getFundRequests();
-  reqs.unshift({ userId: user.id, userName: user.name, amount: amt, time: new Date().toLocaleString(), status: 'Pending' });
+  reqs.unshift({ userId: user.id, userName: user.name, amount: amt, time: new Date().toLocaleString(), status: 'Completed' });
   saveFundRequests(reqs);
   
   // Notify admin
-  const msg = encodeURIComponent(`💰 FUND REQUEST — Global Booster\n\nUser: ${user.name}\nID: ${user.id}\nAmount: ${amt} GHS\nTime: ${new Date().toLocaleString()}\n\nPlease verify Paystack payment and credit account.`);
+  const msg = encodeURIComponent(`💰 FUND ADDED — Global Booster\n\nUser: ${user.name}\nID: ${user.id}\nAmount: ${amt} GHS\nTime: ${new Date().toLocaleString()}\n\nFunds have been credited to the user's account.`);
   window.open('https://wa.me/' + WHATSAPP_NUMBER + '?text=' + msg, '_blank');
   
   // Redirect to Paystack
@@ -1740,26 +1746,32 @@ function proceedToPaystack() {
     window.open(PAYSTACK_URL + '?ref=' + user.id + '&amount=' + amt, '_blank');
   }, 500);
   
-  toast('Redirecting to payment... Admin has been notified.', 'info');
+  toast(`✅ ${amt} GHS has been added to your wallet!`, 'success');
 }
 
 function confirmAddFunds() {
-  const amt = document.getElementById('modalFundsAmt').value;
+  const amt = parseFloat(document.getElementById('modalFundsAmt').value);
   const user = getCurrentUser();
   if (!user) return;
   if (!amt || amt < 5) return toast('Minimum amount is 5 GHS', 'error');
   
-  const reqs = getFundRequests();
-  reqs.unshift({ userId: user.id, userName: user.name, amount: amt, time: new Date().toLocaleString(), status: 'Pending' });
-  saveFundRequests(reqs);
+  // Credit balance immediately
+  user.balance = +(user.balance + amt).toFixed(2);
+  updateUser(user);
+  updateNavUser(user);
+  if (document.getElementById('page-dashboard').classList.contains('active')) loadDashboard(getCurrentUser());
   
+  // Log fund request as completed
+  const reqs = getFundRequests();
+  reqs.unshift({ userId: user.id, userName: user.name, amount: amt, time: new Date().toLocaleString(), status: 'Completed' });
+  saveFundRequests(reqs);
   
   setTimeout(() => {
     window.open(PAYSTACK_URL + '?ref=' + user.id + '&amount=' + amt, '_blank');
   }, 500);
   
   closeModal('addFundsModal');
-  toast('Admin notified! Complete payment on Paystack.', 'success');
+  toast(`✅ ${amt} GHS has been added to your wallet!`, 'success');
 }
 
 // ═══════════════════════════════════ ADMIN ═══════════════════════════════════
